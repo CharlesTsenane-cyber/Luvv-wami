@@ -1,0 +1,288 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&display=swap');
+
+body{background:#0a0a0a;}
+
+#app{
+  min-height:100vh;
+  background:#0a0a0a;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem 1rem 3rem;
+  font-family:var(--font-sans);
+}
+
+.screen{display:none;flex-direction:column;align-items:center;width:100%;}
+.screen.ativo{display:flex;}
+
+/* ── TELA 1: envelope ── */
+#t1{justify-content:center;min-height:80vh;}
+.env-scene{display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer;}
+.env-outer{
+  width:200px;height:136px;position:relative;
+  animation:balanco 3s ease-in-out infinite;
+}
+@keyframes balanco{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.env-body{
+  position:absolute;inset:0;
+  background:#111;
+  border:1.5px solid #c0392b;
+  border-radius:4px 4px 10px 10px;
+  overflow:hidden;
+}
+.env-tri-l{position:absolute;bottom:0;left:0;width:0;height:0;border-bottom:68px solid #1a0808;border-right:100px solid transparent;}
+.env-tri-r{position:absolute;bottom:0;right:0;width:0;height:0;border-bottom:68px solid #1a0808;border-left:100px solid transparent;}
+.env-tri-t{
+  position:absolute;top:0;left:0;
+  width:0;height:0;
+  border-left:100px solid transparent;
+  border-right:100px solid transparent;
+  border-top:72px solid #1c0a0a;
+  z-index:3;
+  transform-origin:top center;
+  transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.env-tri-t.aberto{transform:rotateX(180deg);}
+.env-selo{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;
+  background:#c0392b;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;z-index:4;
+}
+.hint-text{
+  color:#555;font-size:13px;
+  animation:pisca 1.8s ease-in-out infinite;
+  letter-spacing:0.5px;
+}
+@keyframes pisca{0%,100%{opacity:0.3}50%{opacity:1}}
+.para-text{color:#333;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+
+/* partículas flutuantes de fundo */
+.particulas{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.part{
+  position:absolute;font-size:14px;
+  animation:subir linear infinite;
+  opacity:0;
+}
+@keyframes subir{
+  0%{transform:translateY(100vh) scale(0.5);opacity:0}
+  10%{opacity:0.6}
+  90%{opacity:0.3}
+  100%{transform:translateY(-10vh) scale(1.2);opacity:0}
+}
+
+/* ── TELA 2: carta ── */
+#t2{gap:0;animation:aparecer 0.8s cubic-bezier(0.34,1.36,0.64,1);}
+@keyframes aparecer{from{opacity:0;transform:translateY(40px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.carta{
+  width:100%;max-width:340px;
+  background:#0f0f0f;
+  border:1px solid #c0392b;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+}
+.carta-topo{
+  background:#c0392b;
+  padding:18px 20px 14px;
+  text-align:center;
+  position:relative;
+}
+.carta-topo-titulo{
+  font-family:'Playfair Display',serif;
+  font-size:18px;
+  color:#fff;
+  font-style:italic;
+  line-height:1.3;
+}
+.carta-topo-sub{font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.coracao-big{font-size:32px;display:block;margin-bottom:8px;animation:pulsa 1.2s ease-in-out infinite;}
+@keyframes pulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+.carta-corpo{padding:1.4rem 1.5rem;}
+.bloco{margin-bottom:18px;}
+.bloco-label{
+  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  color:#c0392b;margin-bottom:6px;font-weight:500;
+}
+.bloco-texto{
+  font-size:14px;color:#ccc;line-height:1.8;
+}
+.bloco-texto em{color:#fff;font-style:normal;font-weight:500;}
+
+.divisor{
+  height:1px;background:#1e1e1e;
+  margin:0 0 18px;
+  position:relative;
+}
+.divisor::after{
+  content:'❤';
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  background:#0f0f0f;
+  padding:0 8px;
+  color:#c0392b;font-size:12px;
+}
+
+.razoes{list-style:none;padding:0;}
+.razoes li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:14px;color:#ccc;
+  margin-bottom:10px;line-height:1.6;
+}
+.razoes li span.num{
+  color:#c0392b;font-weight:500;font-size:13px;
+  min-width:18px;padding-top:1px;
+}
+
+.carta-fecho{
+  background:#111;
+  border-top:1px solid #1e1e1e;
+  padding:16px 20px;
+  text-align:center;
+}
+.fecho-texto{font-size:13px;color:#888;margin-bottom:14px;line-height:1.7;}
+.fecho-texto strong{color:#fff;}
+
+.hash-btn{
+  display:inline-block;
+  background:#c0392b;
+  color:#fff;
+  font-size:15px;
+  font-weight:500;
+  letter-spacing:1px;
+  padding:10px 22px;
+  border-radius:30px;
+  cursor:pointer;
+  border:none;
+  transition:transform 0.15s, background 0.15s;
+  margin-bottom:4px;
+}
+.hash-btn:active{transform:scale(0.95);}
+.hash-tap{font-size:11px;color:#444;margin-top:6px;letter-spacing:1px;}
+
+/* coracoes voadores */
+.fly{
+  position:fixed;
+  pointer-events:none;
+  font-size:20px;
+  animation:voar 1.2s ease-out forwards;
+  z-index:999;
+}
+@keyframes voar{
+  0%{transform:translateY(0) scale(1);opacity:1}
+  100%{transform:translateY(-220px) scale(0.3);opacity:0}
+}
+
+/* assinatura */
+.assina{font-size:12px;color:#333;text-align:center;margin-top:20px;font-style:italic;letter-spacing:0.5px;}
+</style>
+
+<div id="app" style="position:relative;">
+  <div class="particulas" id="parts"></div>
+
+  <!-- TELA 1 -->
+  <div class="screen ativo" id="t1">
+    <p class="para-text">para ti 🖤</p>
+    <div class="env-scene" onclick="abrirEnvelope()">
+      <div class="env-outer">
+        <div class="env-body">
+          <div class="env-tri-l"></div>
+          <div class="env-tri-r"></div>
+          <div class="env-tri-t" id="flap"></div>
+          <div class="env-selo">❤️</div>
+        </div>
+      </div>
+      <p class="hint-text">toca para abrir</p>
+    </div>
+  </div>
+
+  <!-- TELA 2 -->
+  <div class="screen" id="t2">
+    <div class="carta">
+      <div class="carta-topo">
+        <span class="coracao-big">❤️</span>
+        <p class="carta-topo-titulo">Para uma das mulheres mais importantes<br>da minha vida</p>
+        <p class="carta-topo-sub">uma mensagem do teu favorito</p>
+      </div>
+      <div class="carta-corpo">
+        <div class="bloco">
+          <p class="bloco-label">antes de mais</p>
+          <p class="bloco-texto">
+            ARCHAA. Sabes o que eu penso quando te vejo?<br><br>
+            Que <em>fiz a escolha certa.</em> Que não existe uma versão de mim que não te escolhesse. Voce e a gaja.
+          </p>
+        </div>
+        <div class="divisor"></div>
+        <div class="bloco">
+          <p class="bloco-label">3 razões para sorrires agora</p>
+          <ul class="razoes">
+            <li><span class="num">01</span><span>Tens um sorriso que <em>literalmente</em> desliga o mundo à minha volta. Não é exagero.</span></li>
+            <li><span class="num">02</span><span>Até quando não estás no teu melhor dia, continuas a ser a <em>coisa mais bonita</em> que eu já vi.</span></li>
+            <li><span class="num">03</span><span>Eu escolho-te. Todos os dias. <em>Sem pensar duas vezes.</em></span></li>
+          </ul>
+        </div>
+        <div class="divisor"></div>
+        <div class="bloco" style="margin-bottom:0;">
+          <p class="bloco-label">uma promessa pequena</p>
+          <p class="bloco-texto">
+            Eu vou te amar durante —<br>
+            ate onde voce me permitir. <em>Sempre.</em>
+          </p>
+        </div>
+      </div>
+      <div class="carta-fecho">
+        <p class="fecho-texto">Com mais amor do que consigo escrever aqui,<br><strong>Teu puto 🖤</strong></p>
+        <button class="hash-btn" onclick="disparar(event)">#NaoAsDores</button>
+        <p class="hash-tap">toca aqui ↑</p>
+      </div>
+    </div>
+    <p class="assina">Eu te amo</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const emojis=['❤️','🖤','💋','✨','🥀'];
+  const parts=document.getElementById('parts');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='part';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(6+Math.random()*10)+'s';
+    p.style.animationDelay=(Math.random()*10)+'s';
+    parts.appendChild(p);
+  }
+})();
+
+function abrirEnvelope(){
+  document.getElementById('flap').classList.add('aberto');
+  setTimeout(()=>{
+    document.getElementById('t1').classList.remove('ativo');
+    document.getElementById('t2').classList.add('ativo');
+  },750);
+}
+
+function disparar(e){
+  const cores=['❤️','🖤','💋','🌹','✨','💥'];
+  for(let i=0;i<14;i++){
+    const f=document.createElement('div');
+    f.className='fly';
+    f.textContent=cores[Math.floor(Math.random()*cores.length)];
+    f.style.left=(e.clientX-10+Math.random()*40-20)+'px';
+    f.style.top=(e.clientY-10)+'px';
+    f.style.animationDelay=(Math.random()*0.4)+'s';
+    f.style.fontSize=(14+Math.random()*14)+'px';
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1400);
+  }
+}
+</script>
